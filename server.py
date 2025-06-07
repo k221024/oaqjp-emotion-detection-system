@@ -57,9 +57,17 @@ def sent_detector():
     #Check blank
     if response == "Blank":
         return "Please write something"
-    #Check label is none
-    elif dominant_emotion_name is None:
-        return "Invalid text! Please try again."
+
+    #Check None as response
+    if response['dominant_emotion'] is None:
+        # Extracting emotions, their score and dominant emotion from the response
+        anger_score = None
+        disgust_score = None
+        fear_score = None
+        joy_score = None
+        sadness_score = None
+        dominant_emotion_name = None
+
     else:
         # Extracting emotions, their score and dominant emotion from the response
         anger_score = response['anger']
