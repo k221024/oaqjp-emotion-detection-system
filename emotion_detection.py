@@ -58,36 +58,33 @@ def emotion_detector(text_to_analyse):
     
     #Send a POST request to the API with the text and headers
     response = requests.post(url, json = myobj, headers=header)
-
-    #Parsing the JSON response from the API
-    formatted_response = json.loads(response.text)
-
+    
     if response.status_code == 200:
-        # Extracting emotions and their score from the response
-        anger_score = formatted_response['emotionPredictions'][0]['emotion']['anger']
-        disgust_score = formatted_response['emotionPredictions'][0]['emotion']['disgust']
-        fear_score = formatted_response['emotionPredictions'][0]['emotion']['fear']
-        joy_score = formatted_response['emotionPredictions'][0]['emotion']['joy']
-        sadness_score = formatted_response['emotionPredictions'][0]['emotion']['sadness']
-    elif response.status_code == 400:
-        # Status code is 400, no data available
-        anger_score = None
-        disgust_score = None
-        fear_score = None
-        joy_score = None
-        sadness_score = None
-
-    #Collecting Emotions into single file
-    emotions = {'anger': anger_score, 'disgust': disgust_score, 'fear': fear_score, 'joy': joy_score, 'sadness': sadness_score}
-
-    if response.status_code == 200:
-        #Finding the dominant emotion with maximum score
-        dominant_emotion_name = max(emotions, key=emotions.get)
-    elif response.status_code == 400:
-        dominant_emotion_name = None
-
-    #Adding dominant_emotion key and value
-    emotions['dominant_emotion'] = dominant_emotion_name
+        #Parsing the JSON response from the API
+        formatted_response = json.loads(response.text)
+            emotion_scores = formatted_response['emotionPredictions'][0]['emotion']
+            # Extracting emotions and their score from the response
+            emotions = {
+                'anger': emotion_scores['anger'],
+                'disgust': emotion_scores['disgust'],
+                'fear': emotion_scores['fear'],
+                'joy': emotion_scores['joy'],
+                'sadness': emotion_scores['sadness']
+            }
+            dominant_emotion_name = max(emotions, key=emotions.get)
+            #Adding dominant_emotion key and value
+            emotions['dominant_emotion'] = dominant_emotion_name
+        
+    elif response.status_code == 500:
+        # Status code is 500, no data available
+         emotions = {
+                'anger': None,
+                'disgust': None,
+                'fear': None,
+                'joy': None,
+                'sadness': None,
+                'dominant_emotion': None
+            }
 
     return emotions
 
