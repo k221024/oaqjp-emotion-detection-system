@@ -42,11 +42,8 @@ import json
 
 #Define a function named emotion_detector that takes a string input (text_to_analyse)
 def emotion_detector(text_to_analyse):  
-    # Special case: blank or whitespace input
-    if text_to_analyse.strip() == "":  
+    if text_to_analyse.strip() == "":
         return "Blank"
-
-
     #URL of the emotion detector analysis service
     url = 'https://sn-watson-emotion.labs.skills.network/v1/watson.runtime.nlp.v1/NlpService/EmotionPredict'  
 
@@ -58,26 +55,29 @@ def emotion_detector(text_to_analyse):
     
     #Send a POST request to the API with the text and headers
     response = requests.post(url, json = myobj, headers=header)
-    
+
+    #Parsing the JSON response from the API
+    formatted_response = json.loads(response.text)
+
     if response.status_code == 200:
-        #Parsing the JSON response from the API
-        formatted_response = json.loads(response.text)
-            emotion_scores = formatted_response['emotionPredictions'][0]['emotion']
-            # Extracting emotions and their score from the response
-            emotions = {
-                'anger': emotion_scores['anger'],
-                'disgust': emotion_scores['disgust'],
-                'fear': emotion_scores['fear'],
-                'joy': emotion_scores['joy'],
-                'sadness': emotion_scores['sadness']
-            }
-            dominant_emotion_name = max(emotions, key=emotions.get)
-            #Adding dominant_emotion key and value
-            emotions['dominant_emotion'] = dominant_emotion_name
-        
-    elif response.status_code == 500:
-        # Status code is 500, no data available
-         emotions = {
+        # Extracting emotions and their score from the response
+        anger_score = formatted_response['emotionPredictions'][0]['emotion']['anger']
+        disgust_score = formatted_response['emotionPredictions'][0]['emotion']['disgust']
+        fear_score = formatted_response['emotionPredictions'][0]['emotion']['fear']
+        joy_score = formatted_response['emotionPredictions'][0]['emotion']['joy']
+        sadness_score = formatted_response['emotionPredictions'][0]['emotion']['sadness']
+    
+        #Collecting Emotions into single file
+        emotions = {'anger': anger_score, 'disgust': disgust_score, 'fear': fear_score, 'joy': joy_score, 'sadness': sadness_score}
+
+        #Finding the dominant emotion with maximum score
+        dominant_emotion_name = max(emotions, key=emotions.get)
+
+        #Adding dominant_emotion key and value
+        emotions['dominant_emotion'] = dominant_emotion_name
+
+    else:
+        emotions = {
                 'anger': None,
                 'disgust': None,
                 'fear': None,
@@ -85,7 +85,9 @@ def emotion_detector(text_to_analyse):
                 'sadness': None,
                 'dominant_emotion': None
             }
-
+    
     return emotions
+
+
 
 '''
