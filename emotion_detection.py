@@ -1,4 +1,5 @@
 import requests  # Import the requests library to handle HTTP requests
+import json
 
 #Define a function named emotion_detector that takes a string input (text_to_analyse)
 def emotion_detector(text_to_analyse):  
