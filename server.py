@@ -38,6 +38,7 @@ if __name__ == "__main__":
 
 
 '''
+
 #Import the relevant libraries and functions
 from flask import Flask, render_template, request
 from EmotionDetection.emotion_detection import emotion_detector
@@ -60,14 +61,7 @@ def sent_detector():
 
     #Check None as response
     if response['dominant_emotion'] is None:
-        # Extracting emotions, their score and dominant emotion from the response
-        anger_score = None
-        disgust_score = None
-        fear_score = None
-        joy_score = None
-        sadness_score = None
-        dominant_emotion_name = None
-
+        return "Invalid text! Please try again!"
     else:
         # Extracting emotions, their score and dominant emotion from the response
         anger_score = response['anger']
@@ -76,7 +70,6 @@ def sent_detector():
         joy_score = response['joy']
         sadness_score = response['sadness']
         dominant_emotion_name = response['dominant_emotion']
-
     # Return a formatted string with the emotion detection and their score and dominant emotion
     result = f"For the given statement, the system response is 'anger': {anger_score}, 'disgust': {disgust_score}, 'fear': {fear_score}, 'joy': {joy_score} and 'sadness': {sadness_score}. The dominant emotion is {dominant_emotion_name}."
     return result
